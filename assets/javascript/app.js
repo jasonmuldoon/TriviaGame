@@ -1,0 +1,181 @@
+var triviaQuestions = [{
+	question: "What alters the layout of a web page?",
+	answerList: ["XML", "CSS", "XHTML", "JavaScript"],
+	answer: 1
+},{
+	question: "What allows data to be sent between a web page and a server without fully refreshing the web page?",
+	answerList: ["AJAX", "Session State", "JavaScript", " DOM"],
+	answer: 0
+},{
+	question: "What is the name given to the library of all items stored in .NET?",
+	answerList: ["FCL Framework Class Library", "JQuery", "DLL Dynamic Link Library", "AJAX"],
+	answer: 0
+},{
+	question: "Which tool can be used to manage a website?",
+	answerList: ["SQL", "HTML", "WSAT Website Administration Tool", "ASP Active Server Pages"],
+	answer: 2
+},{
+	question: "Which technology can be used like a database but read by any text editor?",
+	answerList: ["CSS", "HTML", "JavaScript", "XML"],
+	answer: 3
+},{
+	question: "When HTML code is written to a structured, XML structure  what is the technology called?",
+	answerList: ["XHTML", "AJAX", "HTML5", "JQuery"],
+	answer: 0
+},{
+	question: "How many top-level elements can an XML document contain?",
+	answerList: ["0", "1", "2", "Unlimited"],
+	answer: 1
+},{
+	question: "When an HTML or XHTML document passes validation eg at http://validator.w3.org/ it is said to be .....",
+	answerList: ["Correct", "Web based language", "Well formed", "SQL"],
+	answer: 2
+},{
+	question: "What is used to define the structure of an XML document, in a more advanced way than DTD Document Type Definition Validation?",
+	answerList: ["CSS", "XML Schema", "XHTML", "HTML5"],
+	answer: 1
+},{
+	question: "Which is a server-side technology that allows tracking of data for all users of an application?",
+	answerList: ["View State", "Session State", "Control State", "Application State"],
+	answer: 3
+},{
+	question: "Which is a client-side technology that saves data on a web page between refreshes?",
+	answerList: ["View State", "Application State", "Control State", "Session State"],
+	answer: 0
+},{
+	question: "Which is a server-side technology that allows tracking of data for all users of an application?",
+	answerList: ["View State", "Control State", "Session State", "Application State"],
+	answer: 1
+},{
+	question: "Which image tag is required for strict XHTML compliance?",
+	answerList: ["Img", "Src", "Jpg", "Alt"],
+	answer: 3
+},{
+	question: "Which is a read-only control that a user cannot modify directly, but the contents of which may be changed programatically if required?",
+	answerList: ["Label", "TextBox", "ListBox", "ComboBox"],
+	answer: 0
+},{
+	question: "What can be used to create XML rules to force data to adhere to certain standards and structure?",
+	answerList: ["User Validation", "Black Box Testing", "DTD Validation (Document Type Definition)", "Input Validation"],
+	answer: 2
+}];
+
+var gifArray = ['question1', 'question2', 'question3', 'question4', 'question5', 'question6', 'question7', 'question8', 'question9', 'question10', 'question11', 'question12', 'question13','question14','question15'];
+var currentQuestion; var correctAnswer; var incorrectAnswer; var unanswered; var seconds; var time; var answered; var userSelect;
+var messages = {
+	correct: "Yes, that's right!",
+	incorrect: "No, that's not it.",
+	endTime: "Out of time!",
+	finished: "Alright! Let's see how well you did."
+}
+
+$('#startBtn').on('click', function(){
+	$(this).hide();
+	newGame();
+});
+
+$('#startOverBtn').on('click', function(){
+	$(this).hide();
+	newGame();
+});
+
+function newGame(){
+	$('#finalMessage').empty();
+	$('#correctAnswers').empty();
+	$('#incorrectAnswers').empty();
+	$('#unanswered').empty();
+	currentQuestion = 0;
+	correctAnswer = 0;
+	incorrectAnswer = 0;
+	unanswered = 0;
+	newQuestion();
+}
+
+function newQuestion(){
+	$('#message').empty();
+	$('#correctedAnswer').empty();
+	$('#gif').empty();
+	answered = true;
+	
+	//sets up new questions & answerList
+	$('#currentQuestion').html('Question #'+(currentQuestion+1)+'/'+triviaQuestions.length);
+	$('.question').html('<h2>' + triviaQuestions[currentQuestion].question + '</h2>');
+	for(var i = 0; i < 4; i++){
+		var choices = $('<div>');
+		choices.text(triviaQuestions[currentQuestion].answerList[i]);
+		choices.attr({'data-index': i });
+		choices.addClass('thisChoice');
+		$('.answerList').append(choices);
+	}
+	countdown();
+	//clicking an answer will pause the time and setup answerPage
+	$('.thisChoice').on('click',function(){
+		userSelect = $(this).data('index');
+		clearInterval(time);
+		answerPage();
+	});
+}
+
+function countdown(){
+	seconds = 15;
+	$('#timeLeft').html('<h3>Time Remaining: ' + seconds + '</h3>');
+	answered = true;
+	//sets timer to go down
+	time = setInterval(showCountdown, 1000);
+}
+
+function showCountdown(){
+	seconds--;
+	$('#timeLeft').html('<h3>Time Remaining: ' + seconds + '</h3>');
+	if(seconds < 1){
+		clearInterval(time);
+		answered = false;
+		answerPage();
+	}
+}
+
+function answerPage(){
+	$('#currentQuestion').empty();
+	$('.thisChoice').empty(); //Clears question page
+	$('.question').empty();
+
+	var rightAnswerText = triviaQuestions[currentQuestion].answerList[triviaQuestions[currentQuestion].answer];
+	var rightAnswerIndex = triviaQuestions[currentQuestion].answer;
+	$('#gif').html('<img src = "assets/images/'+ gifArray[currentQuestion] +'.gif" width = "400px">');
+	//checks to see correct, incorrect, or unanswered
+	if((userSelect == rightAnswerIndex) && (answered == true)){
+		correctAnswer++;
+		$('#message').html(messages.correct);
+	} else if((userSelect != rightAnswerIndex) && (answered == true)){
+		incorrectAnswer++;
+		$('#message').html(messages.incorrect);
+		$('#correctedAnswer').html('The correct answer was: ' + rightAnswerText);
+	} else{
+		unanswered++;
+		$('#message').html(messages.endTime);
+		$('#correctedAnswer').html('The correct answer was: ' + rightAnswerText);
+		answered = true;
+	}
+	
+	if(currentQuestion == (triviaQuestions.length-1)){
+		setTimeout(scoreboard, 5000)
+	} else{
+		currentQuestion++;
+		setTimeout(newQuestion, 5000);
+	}	
+}
+
+function scoreboard(){
+	$('#timeLeft').empty();
+	$('#message').empty();
+	$('#correctedAnswer').empty();
+	$('#gif').empty();
+
+	$('#finalMessage').html(messages.finished);
+	$('#correctAnswers').html("Correct Answers: " + correctAnswer);
+	$('#incorrectAnswers').html("Incorrect Answers: " + incorrectAnswer);
+	$('#unanswered').html("Unanswered: " + unanswered);
+	$('#startOverBtn').addClass('reset');
+	$('#startOverBtn').show();
+	$('#startOverBtn').html('Start Over?');
+}
