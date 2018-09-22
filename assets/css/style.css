@@ -36,7 +36,7 @@ header{
 .btn-primary,.reset{
     background: linear-gradient(to right, red, orange , yellow, green, cyan, blue); 
     color: white;
-    border-radius: 25px;
+    border-radius: 50%;
     box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
     font-family: 'Sigmar One', sans-serif;
     text-shadow: 1px 2px 0 #000,  
@@ -83,8 +83,8 @@ header{
     border-radius: 10px;
     padding: 20px;
     height: 100%;
-	width: 700px;
-}
+    width: 700px;
+    }
 
 h1{
     text-decoration-color: linear-gradient(to right, red, orange , yellow, green, cyan, blue);
@@ -147,11 +147,13 @@ h3 {
     margin: 30px;
     animation: shake 0.5s; 
     /* When the animation is finished, start again */
-    animation-iteration-count: 5s;
+    animation-iteration-count: 7s;
               
     }
     
-
+    
+    
+    
 
 
 @media screen and (max-width:640px){
